@@ -51,7 +51,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("avg-tracker-bot")
 
-BOT_TOKEN = "8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ608M"
+BOT_TOKEN = "8634099013:AAFzmxEiJ9bbmMVm_CcBD7cLTSZEdKAPUPU"
 if not BOT_TOKEN:
     raise RuntimeError(
         "Не задано змінну середовища BOT_TOKEN. "

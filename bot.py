@@ -1,11 +1,13 @@
 import asyncio
 import logging
+import os
+from aiohttp import web
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = '8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ6O8M'
+API_TOKEN = '8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ608M'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
@@ -27,7 +29,6 @@ async def handle_message(message: Message):
     user_id = message.from_user.id
     text = message.text.strip().replace(',', '.')
 
-    # Якщо дата ще не вибрана — це перше повідомлення стає датою
     if user_id not in active_dates:
         active_dates[user_id] = text
         await message.answer(
@@ -36,7 +37,6 @@ async def handle_message(message: Message):
         )
         return
 
-    # Якщо дата вже є, намагаємося перетворити текст на число
     try:
         new_value = float(text)
     except ValueError:
@@ -47,16 +47,10 @@ async def handle_message(message: Message):
     user_data.setdefault(user_id, {}).setdefault(date_str, [])
     numbers_list = user_data[user_id][date_str]
 
-    # Вираховуємо попереднє середнє
     old_avg = sum(numbers_list) / len(numbers_list) if numbers_list else None
-
-    # Додаємо нове число
     numbers_list.append(new_value)
-    
-    # Нове середнє
     new_avg = sum(numbers_list) / len(numbers_list)
 
-    # Реакція
     reaction = ""
     if old_avg is not None:
         if new_avg < old_avg:
@@ -73,8 +67,22 @@ async def handle_message(message: Message):
         f"*(Можеш надсилати наступне число або написати /start для зміни дати)*"
     )
 
+# Технічна штука для Render, щоб бот не засинав
+async def handle_ping(request):
+    return web.Response(text="I am alive!")
+
+async def web_server():
+    app = web.Application()
+    app.router.add_get("/", handle_ping)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 10000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+
 async def main():
-    await dp.start_polling(bot)
+    # Запускаємо і вебсервер (для Render), і самого бота (для Telegram) одночасно
+    await asyncio.gather(web_server(), dp.start_polling(bot))
 
 if __name__ == '__main__':
     asyncio.run(main())

@@ -5,7 +5,7 @@ from aiogram.types import Message
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = '8634099013:AAEM4fW8rRb6b1IG2QbBLmi4ueNjMQ608M'
+API_TOKEN = '8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ6O8M'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()

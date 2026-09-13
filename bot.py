@@ -1,7 +1,5 @@
 import asyncio
 import logging
-import os
-from aiohttp import web
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 
@@ -12,7 +10,7 @@ API_TOKEN = '8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ608M'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Дані та активні дати прямо в пам'яті
+# Дані та активні дати в пам'яті
 user_data = {}
 active_dates = {}
 
@@ -67,22 +65,8 @@ async def handle_message(message: Message):
         f"*(Можеш надсилати наступне число або написати /start для зміни дати)*"
     )
 
-# Технічна штука для Render, щоб бот не засинав
-async def handle_ping(request):
-    return web.Response(text="I am alive!")
-
-async def web_server():
-    app = web.Application()
-    app.router.add_get("/", handle_ping)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    port = int(os.environ.get("PORT", 10000))
-    site = web.TCPSite(runner, "0.0.0.0", port)
-    await site.start()
-
 async def main():
-    # Запускаємо і вебсервер (для Render), і самого бота (для Telegram) одночасно
-    await asyncio.gather(web_server(), dp.start_polling(bot))
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     asyncio.run(main())

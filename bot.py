@@ -7,7 +7,7 @@ from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = '8634099013:AAEM4zhg-Q5B4MAhcssuYiEvnIeJiOZ_Z3Q'
+API_TOKEN = '8634099013:AAHAQMFw8rRb6blIG2QbBLmi4ueNjMQ6O8M'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
